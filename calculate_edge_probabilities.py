@@ -7,19 +7,43 @@ import pdb
 from graph_tool.all import *
 import os
 import settings
+import numpy as np
+import graph_tool as gt
 
 all_graphs = {}
 files = [ x for x in os.listdir( settings.GRAPH_DIR_FINAL ) \
           if os.path.isfile( os.path.join( settings.GRAPH_DIR_FINAL, x ) ) ]
 files = [ os.path.join( settings.GRAPH_DIR_FINAL, f ) for f in files ]
 TOTAL_MMT_PER_SRC = 20
-for f in files:
+
+ugr = None
+for i in range(1):
+    f = files[i]
     asn = f.split( '/' )[ -1 ].split('.')[0]
     print "COMBIBED graph for ASN", asn
     gr = load_graph(f, fmt="gt")
+    if ugr == None:
+        ugr = gr
+    else:
+        #val = int64_t(1)
+        ugr = graph_union(ugr, gr)#, ugr.vp.asn)
+ugr.set_directed(False)
+graph_draw(ugr, directed=False,  output = "graphdraw.png")
+pdb.set_trace()
+
+for f in files:
+    asn = f.split( '/' )[ -1 ].split('.')[0]
+    #print "COMBIBED graph for ASN", asn
+    gr = load_graph(f, fmt="gt")
+
+    graph_draw(gr, output = "graphdraw.png")
+    
     remove_parallel_edges(gr)
     remove_self_loops(gr)
     overall_origins = {}
+    #pos = gt.random_layout(gr)
+
+    pdb.set_trace()
     for e in gr.edges():
         origin_dict = gr.ep.origin[e]
         for src in origin_dict:
@@ -43,7 +67,11 @@ for f in files:
         #    e_prob += (prob_src * origin_dict[src])/TOTAL_MMT_PER_SRC
         #gr.ep.prob[e] = e_prob
     all_graphs[int(asn)] = gr
-        
+#np.save('all_graphs.npy', all_graphs)
+
+#all_graphs = np.load('all_graphs.npy').item()
+print 'all graphs loaded'
+
 def dfs_paths(gr, src_node, dst_node):
     visited = set()
     stack = [(src_node, [src_node])]
@@ -65,16 +93,22 @@ def get_path_prob(p, gr):
     return prob
 
 def get_path( src, dst):
+    print src, dst
     if dst in all_graphs:
+        print 'dst found in all_graph'
         gr = all_graphs[dst]
         # Find all paths from src to dst in this graph
         src_node = find_vertex(gr, gr.vp.asn, int(src))
-        if not src_node:
-            return None
+        #if not src_node:
+        #    return None
+        print "SRC Node: ", src_node
         src_node = src_node[0]
+        print "SRC Node idx: ", src_node
         dst_node = find_vertex(gr, gr.vp.asn, int(dst))
-        assert dst_node
+        print "DST Node: ", dst_node
+        #assert dst_node
         dst_node = dst_node[0]
+        print "DST Node idx: ", dst_node
         src_dst_paths = dfs_paths(gr, src_node, dst_node)
         #first = next(src_dst_paths, None)
         #if not first:
@@ -100,6 +134,7 @@ def get_path( src, dst):
 
 def get_most_probable_path(src, dst):
     paths = get_path(src, dst)
+    print paths
     paths = sorted(paths, key=lambda x: x[0], reverse=True)
     paths = paths[:5]
     final_paths = []
@@ -107,8 +142,13 @@ def get_most_probable_path(src, dst):
         final_paths.append(p[1])
     return final_paths
 
-pdb.set_trace()
+#pdb.set_trace()
+#paths = get_most_probable_path("101.0.33.0_24","101.0.64.0_18")
 paths = get_most_probable_path(5719,3333)
-print paths
-paths = get_most_probable_path(2119, 4608)
-paths = get_most_probable_path(3265, 3333)
+print "len: ", len(paths), "Path: ", paths
+#paths = get_most_probable_path(2119, 4608)
+#print "len: ", len(paths), "Path: ", paths
+#paths = get_most_probable_path(3265, 3333)
+print "len: ", len(paths), "Path: ", paths
+
+

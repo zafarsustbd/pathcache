@@ -35,10 +35,18 @@ for tup, aspaths in dest_aspaths.iteritems():
             G.add_edge(link[0], link[1], type=link[2], origin=origin)
     dest_based_graphs[dst] = G
 
+print "---------------------"
+print len(dest_based_graphs)
+print "---------------------"
+
 pdb.set_trace()
 for asn, gr in dest_based_graphs.iteritems():
     if not gr: continue
     try:
+    	#print "asn:"
+	#print asn
+	#print "gr:"
+	#print gr.__class__
         data = json_graph.node_link_data( gr )
         s = json.dumps( data )
         with open(settings.GRAPH_DIR_IPLANE_PREF + str(asn), "w") as f:

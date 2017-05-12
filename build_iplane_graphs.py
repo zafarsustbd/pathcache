@@ -6,7 +6,7 @@ import json
 import settings
 import pdb
 
-dest_aspaths = iparse.get_iplane_graphs('2016_08_15')
+dest_aspaths = iparse.get_iplane_graphs('2016_05_30')
 
 dest_based_graphs = {}
 for dst, aspaths in dest_aspaths.iteritems():
@@ -44,4 +44,5 @@ for asn, gr in dest_based_graphs.iteritems():
             f.write( s )
     except:
         pdb.set_trace()
+	#pass
 

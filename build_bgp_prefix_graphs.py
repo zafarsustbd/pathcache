@@ -112,4 +112,4 @@ for pref, gr in bgp_graphs.iteritems():
         with open( settings.GRAPH_DIR_BGP_PREF + '%s' % pref, "w" ) as f:
             f.write( s )
     except:
-        pdb.set_trace()
+        pdb.set_trace=lambda: None

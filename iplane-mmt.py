@@ -16,6 +16,7 @@ from datetime import datetime, timedelta
 print "To ensure correct usage, place the extracted Iplane dumps (get from here: http://iplane.cs.washington.edu/data/today/traces_2016_02_27.tar.gz) in ~/data/iplane/. Place the readout file (http://iplane.cs.washington.edu/data/readoutfile) in ~/data/iplane/ and then the APIs will be able to find the data."
 
 dir_files = {}
+dates = ["2016_08_16"]
 for date in [dates]:
     dirName = "traces_" + date 
 

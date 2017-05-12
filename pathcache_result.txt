@@ -1,0 +1,8 @@
+Threshold 5:
+Total:  665  exact:  66  1E:  111  2E:  123  3E: 130  4E:  113  same:  119  shorter:100  longer:  446
+
+Threshold 3:
+Total:  436  exact:  59  1E:  86  2E:  84  3E: 85  4E:  65  same:  75  shorter:  79  longer:  282
+
+Threshold 1:
+Total:  159  exact:  43  1E:  37  2E:  29  3E: 21  4E:  14  same:  25  shorter:  41  longer:  93

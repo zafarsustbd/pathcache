@@ -56,10 +56,12 @@ def get_new_gr(gr=None):
     return gr
     
 all_graphs = {}
+files = []
+''' Zafar
 files = [ x for x in os.listdir( settings.GRAPH_DIR_RIPE_PREF ) \
           if os.path.isfile( os.path.join( settings.GRAPH_DIR_RIPE_PREF, x ) ) ]
 files = [ os.path.join( settings.GRAPH_DIR_RIPE_PREF, f ) for f in files ]
-
+'''
 for f in files:
     pref = f.split( '/' )[ -1 ].split('.gt')[0]
     print "RIPE graph for PREF", pref
@@ -82,9 +84,12 @@ for f in files:
 print "Loaded Ripe graphs in memory"
 print len( all_graphs.keys() )
 
+files = []
+''' Zafar
 files = [ x for x in os.listdir( settings.GRAPH_DIR_CAIDA_PREF ) \
           if os.path.isfile( os.path.join( settings.GRAPH_DIR_CAIDA_PREF, x ) ) ]
 files = [ os.path.join( settings.GRAPH_DIR_CAIDA_PREF, f ) for f in files ]
+'''
 #files = [f for f in files if '216.58.219.0_24' in f]
 #pdb.set_trace()
 for f in files:
@@ -187,14 +192,14 @@ for f in files:
     pdb.set_trace()
     all_graphs[pref] = gr_asn
     gr_asn.save(settings.GRAPH_DIR_FINAL_PREF + '%s.gt' % pref)
-'''
+
 files = [ x for x in os.listdir( settings.GRAPH_DIR_IPLANE_PREF ) \
           if os.path.isfile( os.path.join( settings.GRAPH_DIR_IPLANE_PREF, x ) ) ]
 files = [ os.path.join( settings.GRAPH_DIR_IPLANE_PREF, f ) for f in files ]
 
 for f in files:
     pref = f.split( '/' )[ -1 ]
-    print "Parsing Iplane graph for", pref
+    #print "Parsing Iplane graph for", pref
     with open( f ) as fi:
         jsonStr = json.load(fi)
     gr = json_graph.node_link_graph( jsonStr )
@@ -264,6 +269,7 @@ for f in files:
             continue
     all_graphs[pref] = gr_asn
 
+'''
 files = [ x for x in os.listdir( settings.GRAPH_DIR_BGP ) \
           if os.path.isfile( os.path.join( settings.GRAPH_DIR_BGP, x ) ) ]
 files = [ os.path.join( settings.GRAPH_DIR_BGP, f ) for f in files ]

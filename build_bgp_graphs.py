@@ -16,7 +16,6 @@ def build_bgp_graph(project=None, collector=None):
     global bgp_graphs
     stream = BGPStream()
     rec = BGPRecord()
-
     if collector:
         stream.add_filter('collector', collector)
     else:
@@ -26,15 +25,15 @@ def build_bgp_graph(project=None, collector=None):
     stream.add_filter('record-type','ribs')
     
     # Consider this time interval:
-    #cur_time = int( time.time() )
-    cur_time  = 1471219200
+    cur_time = int( time.time() )
+    #cur_time  = 1471219200
     if collector and 'views' in collector:
         interval = 3
     else:
         interval = 10
         
-    #prev_time = int(cur_time - (60 * 60 * interval))
-    prev_time = 1471132800
+    prev_time = int(cur_time - (60 * 60 * interval))
+    #prev_time = 1471132800
     print "Starting stream with %d interval" % interval
     stream.add_interval_filter(prev_time, cur_time)
     stream.start()
@@ -43,7 +42,9 @@ def build_bgp_graph(project=None, collector=None):
     while(stream.get_next_record(rec)):
         elem = rec.get_next_elem()
         while(elem):
-            pdb.set_trace()
+            #pdb.set_trace = lambda: None
+	    if ribEntryCount%100==0:
+	    	print ribEntryCount
             ribEntryCount += 1
             peer = str(elem.peer_asn)
             hops = [k for k, g in groupby(elem.fields['as-path'].split(" "))]
@@ -61,7 +62,7 @@ def build_bgp_graph(project=None, collector=None):
                 # toward this prefix
                 origin = hops[-1]
                 if origin in ixp.IXPs:
-                    print "Origin", origin, "is an IXP, it announced prefix", elem.fields['prefix']
+                    #print "Origin", origin, "is an IXP, it announced prefix", elem.fields['prefix']
                     elem = rec.get_next_elem()
                     continue
                 if origin in bgp_graphs:
@@ -104,6 +105,8 @@ print len( bgp_graphs.keys() )
 print "Getting RIB from route-views.route-views2"
 build_bgp_graph(collector='route-views2')
 print len( bgp_graphs.keys() )
+
+print bgp_graphs
 
 for asn, gr in bgp_graphs.iteritems():
     if not gr: continue

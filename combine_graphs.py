@@ -45,9 +45,12 @@ def get_new_gr(gr=None):
 
 all_gr_counts = {}
 all_graphs = {}
+files = []
+''' # Zafar
 files = [ x for x in os.listdir( settings.GRAPH_DIR_RIPE ) \
           if os.path.isfile( os.path.join( settings.GRAPH_DIR_RIPE, x ) ) ]
 files = [ os.path.join( settings.GRAPH_DIR_RIPE, f ) for f in files ]
+'''
 
 for f in files:
     asn = f.split( '/' )[ -1 ].split('.')[0]
@@ -72,11 +75,12 @@ for f in files:
 
 print "Loaded Ripe graphs in memory"
 print len( all_graphs.keys() )
-
+files = []
+''' #Zafar
 files = [ x for x in os.listdir( settings.GRAPH_DIR_CAIDA ) \
           if os.path.isfile( os.path.join( settings.GRAPH_DIR_CAIDA, x ) ) ]
 files = [ os.path.join( settings.GRAPH_DIR_CAIDA, f ) for f in files ]
-
+'''
 for f in files:
     asn = f.split( '/' )[ -1 ]
     print "Parsing CAIDA graph for", asn
@@ -137,14 +141,16 @@ for f in files:
         except OverflowError:
             continue
     all_graphs[asn] = gr_asn
-
+files = []
+'''
 files = [ x for x in os.listdir( settings.GRAPH_DIR_IPLANE ) \
           if os.path.isfile( os.path.join( settings.GRAPH_DIR_IPLANE, x ) ) ]
 files = [ os.path.join( settings.GRAPH_DIR_IPLANE, f ) for f in files ]
-
+'''
+print "Number of iplane files: ", len(files)
 for f in files:
     asn = f.split( '/' )[ -1 ]
-    print "Parsing Iplane graph for", asn
+    #print "Parsing Iplane graph for", asn
     with open( f ) as fi:
         jsonStr = json.load( fi )
     gr = json_graph.node_link_graph( jsonStr )
@@ -209,13 +215,20 @@ for f in files:
     all_graphs[asn] = gr_asn
 
 >>>>>>> fc3d2764437ed4fe5787beffcf0b395c6bf4dd9a
+'''
 files = [ x for x in os.listdir( settings.GRAPH_DIR_BGP ) \
           if os.path.isfile( os.path.join( settings.GRAPH_DIR_BGP, x ) ) ]
 files = [ os.path.join( settings.GRAPH_DIR_BGP, f ) for f in files ]
 
+i = 0
 for f in files:
     asn = f.split( '/' )[ -1 ]
-    print "Parsing BGP graph for", asn
+    #print "Parsing BGP graph for", asn
+    i += 1
+    if i % 500 == 0:
+        print 'Parsed ', i, 'th data till now'
+    if i == 35000:
+        break
     with open( f ) as fi:
         jsonStr = json.load( fi )
     gr = json_graph.node_link_graph( jsonStr )
@@ -257,8 +270,8 @@ for f in files:
         except OverflowError:
             continue
     all_graphs[asn] = gr_asn
-<<<<<<< HEAD
-'''
+#<<<<<<< HEAD
+#'''
 
 for asn, gr in all_graphs.iteritems():
     print asn
